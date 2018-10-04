@@ -33,4 +33,38 @@ describe MoviesController do
       flash[:notice].should eq("'#{fake_movie.title}' has no director info")
     end
   end
+  describe 'render index' do
+    it 'render index' do
+      get :index
+      expect(response).to render_template("index")
+    end
+  end
+  describe 'create movie' do
+    it 'should get a success message' do
+      fake_movie = double('Movie', :title => 'Aladdin')
+      Movie.stub(:create!).and_return(fake_movie)
+      post :create, { :movie => { :title => "Aladdin" } }
+      #expect(response.content_type).to eq "text/html"
+      flash[:notice].should eq("#{fake_movie.title} was successfully created.")
+    end
+  end
+  describe 'update movie' do
+    it 'should get a success message' do
+      fake_movie = Movie.create(:title => 'a' ,:director => 'Aladdin')
+      fake_id=fake_movie.id
+      fake_title='Not Aladdin'
+      put :update, { :id => fake_id, :movie => {:title => fake_title} }
+      #expect(response.content_type).to eq "text/html"
+      flash[:notice].should eq("#{fake_title} was successfully updated.")
+    end
+  end
+  describe 'delete movie' do
+    it 'should get a success message' do
+      fake_movie = Movie.create(:title => 'a' ,:director => 'Aladdin')
+      fake_id=fake_movie.id
+      put :destroy, { :id => fake_id }
+      #expect(response.content_type).to eq "text/html"
+      flash[:notice].should eq("Movie '#{fake_movie.title}' deleted.")
+    end
+  end
 end

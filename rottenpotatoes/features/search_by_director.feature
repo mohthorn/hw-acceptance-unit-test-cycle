@@ -26,6 +26,28 @@ Scenario: find movie with same director
   And   I should see "THX-1138"
   But   I should not see "Blade Runner"
 
+  
+Scenario: can't find similar movies if we don't know director (sad path)
+  Given I am on the details page for "Alien"
+  Then  I should not see "Ridley Scott"
+  When  I follow "Find Movies With Same Director"
+  Then  I should be on the home page
+  And   I should see "'Alien' has no director info"
+  
+  
+Scenario: update
+  Given I am on the details page for "Alien"
+  When  I follow "Edit"
+  And  I set "Rating" to "NC-17"
+  And  I press "Update Movie Info"
+  Then the rating of "Alien" should be "NC-17"
+  
+Scenario: rating filters
+  Given I am on the home page
+  And I uncheck "ratings[PG]"
+  And I press "Refresh"
+  Then  I should not see "Star Wars"
+  
 Scenario: can't find similar movies if we don't know director (sad path)
   Given I am on the details page for "Alien"
   Then  I should not see "Ridley Scott"
