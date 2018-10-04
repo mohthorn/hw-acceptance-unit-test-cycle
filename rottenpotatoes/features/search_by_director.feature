@@ -47,10 +47,9 @@ Scenario: rating filters
   And I uncheck "ratings[PG]"
   And I press "Refresh"
   Then  I should not see "Star Wars"
+  And I should see "Alien"
   
-Scenario: can't find similar movies if we don't know director (sad path)
+Scenario: back to home page
   Given I am on the details page for "Alien"
-  Then  I should not see "Ridley Scott"
-  When  I follow "Find Movies With Same Director"
+  And I follow "Back to movie list"
   Then  I should be on the home page
-  And   I should see "'Alien' has no director info"

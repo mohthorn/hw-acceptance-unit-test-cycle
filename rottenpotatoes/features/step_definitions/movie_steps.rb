@@ -16,3 +16,7 @@ end
 Then(/^the rating of "([^"]*)" should be "([^"]*)"$/) do |title, rating|
   Movie.find_by_title(title).rating.should eq rating
 end
+
+
+
+
