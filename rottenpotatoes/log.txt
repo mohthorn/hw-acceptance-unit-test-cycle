@@ -1,0 +1,107 @@
+Using the default profile...
+Feature: search for movies by director
+  As a movie buff
+  So that I can find movies with my favorite director
+  I want to include and serach on director information in movies I enter
+
+  Background: movies in database      # features/search_by_director.feature:7
+    Given the following movies exist: # features/step_definitions/movie_steps.rb:1
+      | title        | rating | director     | release_date |
+      | Star Wars    | PG     | George Lucas | 1977-05-25   |
+      | Blade Runner | PG     | Ridley Scott | 1982-06-25   |
+      | Alien        | R      |              | 1979-05-25   |
+      | THX-1138     | R      | George Lucas | 1971-03-11   |
+
+  Scenario: add director to existing movie                # features/search_by_director.feature:16
+    When I go to the edit page for "Alien"                # features/step_definitions/web_steps.rb:48
+    And I fill in "Director" with "Ridley Scott"          # features/step_definitions/web_steps.rb:60
+    And I press "Update Movie Info"                       # features/step_definitions/web_steps.rb:52
+    Then the director of "Alien" should be "Ridley Scott" # features/step_definitions/movie_steps.rb:7
+
+  Scenario: find movie with same director                       # features/search_by_director.feature:22
+    Given I am on the details page for "Star Wars"              # features/step_definitions/web_steps.rb:44
+    When I follow "Find Movies With Same Director"              # features/step_definitions/web_steps.rb:56
+    Then I should be on the Similar Movies page for "Star Wars" # features/step_definitions/web_steps.rb:230
+    And I should see "THX-1138"                                 # features/step_definitions/web_steps.rb:105
+    But I should not see "Blade Runner"                         # features/step_definitions/web_steps.rb:123
+
+  Scenario: can't find similar movies if we don't know director (sad path) # features/search_by_director.feature:30
+    Given I am on the details page for "Alien"                             # features/step_definitions/web_steps.rb:44
+    Then I should not see "Ridley Scott"                                   # features/step_definitions/web_steps.rb:123
+    When I follow "Find Movies With Same Director"                         # features/step_definitions/web_steps.rb:56
+    Then I should be on the home page                                      # features/step_definitions/web_steps.rb:230
+    And I should see "'Alien' has no director info"                        # features/step_definitions/web_steps.rb:105
+
+  #added_scenario 1
+  Scenario: update rating                        # features/search_by_director.feature:38
+    Given I am on the details page for "Alien"   # features/step_definitions/web_steps.rb:44
+    When I follow "Edit"                         # features/step_definitions/web_steps.rb:56
+    And I set "Rating" to "NC-17"                # features/step_definitions/movie_steps.rb:12
+    And I press "Update Movie Info"              # features/step_definitions/web_steps.rb:52
+    Then the rating of "Alien" should be "NC-17" # features/step_definitions/movie_steps.rb:16
+
+  #added_scenario 2
+  Scenario: rating filters            # features/search_by_director.feature:45
+    Given I am on the home page       # features/step_definitions/web_steps.rb:44
+    And I uncheck "ratings[PG]"       # features/step_definitions/web_steps.rb:93
+    And I press "Refresh"             # features/step_definitions/web_steps.rb:52
+    Then I should not see "Star Wars" # features/step_definitions/web_steps.rb:123
+    And I should see "Alien"          # features/step_definitions/web_steps.rb:105
+
+  #added_scenario 3
+  Scenario: back to home page when in similar page        # features/search_by_director.feature:52
+    Given I am on the Similar Movies page for "Star Wars" # features/step_definitions/web_steps.rb:44
+    And I follow "Movie Title"                            # features/step_definitions/web_steps.rb:56
+    Then I should be on the home page                     # features/step_definitions/web_steps.rb:230
+
+  #added_scenario 4
+  Scenario: Uncheck all filters            # features/search_by_director.feature:57
+    Given I am on the home page            # features/step_definitions/web_steps.rb:44
+    And I uncheck "ratings[PG]"            # features/step_definitions/web_steps.rb:93
+    And I uncheck "ratings[G]"             # features/step_definitions/web_steps.rb:93
+    And I uncheck "ratings[PG-13]"         # features/step_definitions/web_steps.rb:93
+    And I uncheck "ratings[NC-17]"         # features/step_definitions/web_steps.rb:93
+    And I uncheck "ratings[R]"             # features/step_definitions/web_steps.rb:93
+    Then I should be on the home page      # features/step_definitions/web_steps.rb:230
+    And I should see "Alien"               # features/step_definitions/web_steps.rb:105
+    And I should see "Star Wars"           # features/step_definitions/web_steps.rb:105
+    And I should see "Blade Runner"        # features/step_definitions/web_steps.rb:105
+    And I should see "THX-1138"            # features/step_definitions/web_steps.rb:105
+    And I should see "ratings[PG]" checked # features/step_definitions/movie_steps.rb:21
+
+7 scenarios (7 passed)
+46 steps (46 passed)
+0m0.372s
+Coverage report generated for Cucumber Features, RSpec to /home/ec2-user/environment/hw-acceptance-unit-test-cycle/rottenpotatoes/coverage. 55 / 57 LOC (96.49%) covered.
+
+MoviesController
+  find movies with same director
+    should call the model method that finds movies with same director
+    should select the Similar template for rendering when movie has a director
+    should make the movies with same director available to that template
+    should select the Index page to redirect to when movie has no director
+    should make the error message available to that template
+  render index
+    render index
+  create movie
+    should get a success message
+  update movie
+    should get a success message
+  delete movie
+    should get a success message
+  sort by title
+    should be in home page when sorted
+
+Movie
+  find movies with same director
+    it should find movies by the same director
+    it should not find movies by different directors
+  get movie ratings
+    it should get all possible ratings
+
+2 deprecation warnings total
+
+Finished in 0.13313 seconds (files took 1.58 seconds to load)
+13 examples, 0 failures
+
+Coverage report generated for Cucumber Features, RSpec to /home/ec2-user/environment/hw-acceptance-unit-test-cycle/rottenpotatoes/coverage. 55 / 57 LOC (96.49%) covered.

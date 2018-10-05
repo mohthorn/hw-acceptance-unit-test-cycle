@@ -17,6 +17,9 @@ Then(/^the rating of "([^"]*)" should be "([^"]*)"$/) do |title, rating|
   Movie.find_by_title(title).rating.should eq rating
 end
 
-
+#checkbox is checked?
+Then(/^I should see "([^"]*)" checked$/) do |checkbox|
+  find_field(checkbox)[:value].should eq "1"
+end
 
 

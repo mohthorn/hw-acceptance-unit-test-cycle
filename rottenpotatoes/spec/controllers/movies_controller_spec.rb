@@ -67,4 +67,11 @@ describe MoviesController do
       flash[:notice].should eq("Movie '#{fake_movie.title}' deleted.")
     end
   end
+  
+  describe 'sort by title' do
+    it 'should be in home page when sorted' do
+      get :index, {:sort => 'title', :ratings => ['R']}
+      response.should redirect_to movies_path(:sort => 'title', :ratings => ['R'])
+    end
+  end
 end

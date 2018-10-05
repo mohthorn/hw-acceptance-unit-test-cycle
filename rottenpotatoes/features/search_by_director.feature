@@ -34,22 +34,36 @@ Scenario: can't find similar movies if we don't know director (sad path)
   Then  I should be on the home page
   And   I should see "'Alien' has no director info"
   
-  
-Scenario: update
+#added_scenario 1 
+Scenario: update rating
   Given I am on the details page for "Alien"
   When  I follow "Edit"
   And  I set "Rating" to "NC-17"
   And  I press "Update Movie Info"
   Then the rating of "Alien" should be "NC-17"
-  
+#added_scenario 2  
 Scenario: rating filters
   Given I am on the home page
   And I uncheck "ratings[PG]"
   And I press "Refresh"
   Then  I should not see "Star Wars"
   And I should see "Alien"
-  
-Scenario: back to home page
-  Given I am on the details page for "Alien"
-  And I follow "Back to movie list"
-  Then  I should be on the home page
+#added_scenario 3  
+Scenario: back to home page when in similar page
+  Given  I am on the Similar Movies page for "Star Wars"
+  And  I follow "Movie Title"
+  Then I should be on the home page
+#added_scenario 4 
+Scenario: Uncheck all filters
+  Given  I am on the home page
+  And I uncheck "ratings[PG]"
+  And I uncheck "ratings[G]"
+  And I uncheck "ratings[PG-13]"
+  And I uncheck "ratings[NC-17]"
+  And I uncheck "ratings[R]"
+  Then I should be on the home page 
+  And I should see "Alien"
+  And I should see "Star Wars"
+  And I should see "Blade Runner"
+  And I should see "THX-1138"
+  And I should see "ratings[PG]" checked
